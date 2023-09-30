@@ -5,10 +5,10 @@ from vehicle_detector import VehicleDetector
 vd = VehicleDetector()
 
 # load the image footage
-# img_footage = cv2.imread("footages/input_image_1120x768.png")
-# img_footage = cv2.imread("footages/input_image_02.png")
-# img_footage = cv2.imread("footages/input_image_03.png")
-img_footage = cv2.imread("footages/input_image_04.png")
+# img_footage = cv2.imread("footages/images/input_image_1120x768.png")
+# img_footage = cv2.imread("footages/images/input_image_02.png")
+# img_footage = cv2.imread("footages/images/input_image_03.png")
+img_footage = cv2.imread("footages/images/input_image_04.png")
 
 # get the coordinations of detected vehicles as an array
 vehicle_boxes = vd.detect_vehicles(img_footage) 

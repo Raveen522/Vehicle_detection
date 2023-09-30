@@ -6,7 +6,7 @@ import math
 # Initialize Object Detection
 od = ObjectDetection()
 
-cap = cv2.VideoCapture("footages/input_video_01.mp4")
+cap = cv2.VideoCapture("footages/videos/input_video_01.mp4")
 
 
 # Initialize count

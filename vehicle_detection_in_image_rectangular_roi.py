@@ -6,7 +6,7 @@ from vehicle_detector import VehicleDetector
 vd = VehicleDetector()
 
 # Load the image footage
-img_footage = cv2.imread("footages/input_image_1120x768.png")
+img_footage = cv2.imread("footages/images/input_image_1120x768.png")
 
 # Define the region of interest (ROI) coordinates
 roi_left = 350
