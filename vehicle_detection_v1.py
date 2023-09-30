@@ -6,7 +6,7 @@ import math
 # Initialize Object Detection
 od = ObjectDetection()
 
-cap = cv2.VideoCapture("input_video.mp4")
+cap = cv2.VideoCapture("footages/input_video_01.mp4")
 
 
 # Initialize count
@@ -41,8 +41,9 @@ while True:
             cx = int((x + x + w) / 2)
             cy = int((y + y + h) / 2)
             center_points_cur_frame.append((cx, cy))
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 1)
+            text = f"{class_name}"
+            cv2.putText(frame, text, (x, y - 10), 2, 0.5, (57, 44, 5226), 1)
 
 
     # Only at the beginning we compare previous and current frame
@@ -82,8 +83,8 @@ while True:
             track_id += 1
 
     for object_id, pt in tracking_objects.items():
-        cv2.circle(frame, pt, 5, (0, 0, 255), -1)
-        cv2.putText(frame, str(object_id), (pt[0], pt[1] - 7), 0, 1, (0, 0, 255), 2)
+        cv2.circle(frame, pt, 3, (0, 0, 255), -1)
+        cv2.putText(frame, str(object_id), (pt[0], pt[1] - 7), 2, 1, (230, 164, 63), 1)
 
     print("Tracking objects")
     print(tracking_objects)

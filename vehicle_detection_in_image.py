@@ -1,88 +1,25 @@
 import cv2
-import numpy as np
-from object_detection import ObjectDetection
-import math
+from vehicle_detector import VehicleDetector
 
-# Initialize Object Detection
-od = ObjectDetection()
+# loading vehicle detector
+vd = VehicleDetector()
 
-# Read an image
-image = cv2.imread("input_image.jpg")
+# load the image footage
+# img_footage = cv2.imread("footages/input_image_1120x768.png")
+# img_footage = cv2.imread("footages/input_image_02.png")
+# img_footage = cv2.imread("footages/input_image_03.png")
+img_footage = cv2.imread("footages/input_image_04.png")
 
-# Initialize count
-count = 0
-center_points_prev_frame = []
+# get the coordinations of detected vehicles as an array
+vehicle_boxes = vd.detect_vehicles(img_footage) 
+vehicle_count = len(vehicle_boxes)
 
-tracking_objects = {}
-track_id = 0
+for box in vehicle_boxes:
+    x, y, w, h = box # assigning attributes of box
 
-# Point current frame
-center_points_cur_frame = []
+    cv2.rectangle(img_footage, (x, y), (x + w, y + h), (57, 44, 226), 1) # draw a rectangle
+    cv2.putText(img_footage, "Vehicles: " + str(vehicle_count), (20, 50), 16, 1, (31, 31, 31), 2) # put vehicle count that detected  
 
-# Inside the main loop after detecting objects
-class_ids, scores, boxes = od.detect(image)
 
-# Define the list of acceptable class labels
-acceptable_classes = ["car", "van", "bus", "truck", "motorbike"]
-
-# Filter objects based on class labels
-for i in range(len(class_ids)):
-    class_id = int(class_ids[i])
-    class_name = od.classes[class_id]
-
-    if class_name in acceptable_classes:
-        (x, y, w, h) = boxes[i]
-        cx = int((x + x + w) / 2)
-        cy = int((y + y + h) / 2)
-        center_points_cur_frame.append((cx, cy))
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-# Only at the beginning we compare previous and current frame
-if count <= 2:
-    for pt in center_points_cur_frame:
-        for pt2 in center_points_prev_frame:
-            distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
-
-            if distance < 20:
-                tracking_objects[track_id] = pt
-                track_id += 1
-else:
-
-    tracking_objects_copy = tracking_objects.copy()
-    center_points_cur_frame_copy = center_points_cur_frame.copy()
-
-    for object_id, pt2 in tracking_objects_copy.items():
-        object_exists = False
-        for pt in center_points_cur_frame_copy:
-            distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
-
-            # Update IDs position
-            if distance < 20:
-                tracking_objects[object_id] = pt
-                object_exists = True
-                if pt in center_points_cur_frame:
-                    center_points_cur_frame.remove(pt)
-                continue
-
-        # Remove IDs lost
-        if not object_exists:
-            tracking_objects.pop(object_id)
-
-    # Add new IDs found
-    for pt in center_points_cur_frame:
-        tracking_objects[track_id] = pt
-        track_id += 1
-
-for object_id, pt in tracking_objects.items():
-    cv2.circle(image, pt, 5, (0, 0, 255), -1)
-    cv2.putText(image, str(object_id), (pt[0], pt[1] - 7), 0, 1, (0, 0, 255), 2)
-
-print("Tracking objects")
-print(tracking_objects)
-
-print("CUR FRAME LEFT PTS")
-print(center_points_cur_frame)
-
-cv2.imshow("Frame", image)
+cv2.imshow("Vehicles", img_footage) # show the output
 cv2.waitKey(0)
-cv2.destroyAllWindows()
